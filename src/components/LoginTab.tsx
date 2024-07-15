@@ -1,5 +1,4 @@
-"use client";
-import 'dotenv/config'
+'use client'
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -16,48 +15,17 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { useState } from "react"
 
-import React, { useState } from "react"
-import Cookies from 'js-cookie'
+type loginPage = {
+  loginHandle: () => any
+  signupHandle: () => any
+}
 
-const Login: React.FC = () => {
-  // const session = await getSession()
+const LoginTab: React.FC<loginPage> = ({loginHandle, signupHandle}: loginPage) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  // let email = ''
-  // let name = ''
-  // let password = ''
-
-  const handleSignup = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Lógica de autenticação aqui
-    // console.log('Name:', name);
-    // console.log('Email:', email);
-    // console.log('Password:', password);
-  };
-
-  const handleLogin = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault()
-    const user = {email, password}
-    if(!user){
-      return
-    }
-  const token = await fetch(`http://localhost:3333/users/authenticate`, {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user)
-  })
-  const data = await token.json()
-  if(!data) {
-    return
-  }
-  const expires = new Date(Date.now() + 86400000 )
-  Cookies.set('session', data.access_token, {expires, httpOnly: true})
-  };
-
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       <Tabs defaultValue="login" className="w-[400px]">
@@ -70,7 +38,8 @@ const Login: React.FC = () => {
           <CardHeader>
             <CardTitle>Login</CardTitle>
           </CardHeader>
-          <form className="space-y-1" onSubmit={handleLogin}>
+          <form className="space-y-1" onSubmit={async () => {
+            await loginHandle()}}>
             <CardContent className="space-y-2">
               <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
@@ -92,7 +61,7 @@ const Login: React.FC = () => {
           <CardHeader>
             <CardTitle>Sign Up</CardTitle>
           </CardHeader>
-          <form className="space-y-1" onSubmit={handleSignup}>
+          <form className="space-y-1" onSubmit={signupHandle}>
             <CardContent className="space-y-2">
             <div className="space-y-1">
                 <Label htmlFor="name">Name</Label>
@@ -118,4 +87,4 @@ const Login: React.FC = () => {
   )
 }
 
-export default Login
+export default LoginTab
